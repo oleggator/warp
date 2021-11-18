@@ -194,3 +194,41 @@ func GetExpRandSize(rng *rand.Rand, max int64) int64 {
 	// For lowest part, do linear
 	return 1 + int64(random*math.Pow(2, logSizeMin+1))
 }
+
+type Probability struct {
+	Probability int32
+	Value       int64
+}
+
+var distribution = []Probability{
+	{23, 4_000},
+	{35, 32_000},
+	{15, 64_000},
+	{10, 128_000},
+	{14, 2_000_000},
+	{3, 16_000_000},
+}
+
+func init() {
+	var sum int32 = 0
+	for _, probability := range distribution {
+		sum += probability.Probability
+	}
+
+	if sum != 100 {
+		panic("invalid distribution")
+	}
+}
+
+func GetDistributedRandSize(rng *rand.Rand) int64 {
+	randValue := rng.Int31n(100)
+
+	for _, probability := range distribution {
+		if randValue < probability.Probability {
+			return probability.Value
+		}
+		randValue -= probability.Probability
+	}
+
+	panic("invalid distribution")
+}

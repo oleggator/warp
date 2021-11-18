@@ -44,7 +44,7 @@ func (o Options) getSize(rng *rand.Rand) int64 {
 	if !o.randSize {
 		return o.totalSize
 	}
-	return GetExpRandSize(rng, o.totalSize)
+	return GetDistributedRandSize(rng)
 }
 
 func defaultOptions() Options {
